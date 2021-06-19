@@ -1,6 +1,7 @@
 import React from 'react';
-import InputBase from '../InputBase/InputBase.jsx'
+import InputBase from '../InputBase/InputBase.jsx';
 import './Form.css';
+import {OTHERCARDS} from '../constants';
 
 const INIT_CARD = {  
     card: '',
@@ -13,9 +14,54 @@ class Form extends React.Component {
     super();
     this.state = {
       cardData: INIT_CARD,
-      maxLength: 19
+      maxLength: OTHERCARDS.length,
+      error: {},
+      cardType: null,
     }
   }
+   
+  findDebitCardType = (cardNumber) => {
+    const regexPattern = {
+      MASTERCAD: /^5[1-5][0-9]{1,}|^2[2-7][0-9]{1,}$/,
+      VISA: /^4[0-9]{5,}$/,
+      AMERICAN_EXPRESS: /^3[47][0-9]{5,}$/,
+      DISCOVER: /^6(?:011|5[0-9]{2})[0-9]{3,}$/,
+    };
+    for(const card in regexPattern){
+      if(cardNumber.replace(/[^\d]/g, '').match(regexPattern[card])) return card;      
+    }
+    return '';
+  }
+
+  handleValidations = (type, value) => {
+     switch (type) {
+       case 'card':
+         this.setState({cardType: this.findDebitCardType(value)})
+         // find card type.
+         // setState cardType, error
+         break;
+       case 'cardHolder':
+         // checks for spaces and numbers
+         //setState for an error
+         break;
+       case 'expiry':
+         //check date formate
+         //set state for
+         break;
+      case 'securityCode':
+         //check min lenght
+         // set error
+         break;
+      default:
+        break;
+
+     }
+  }
+
+  handleBlur = (e) => this.handleValidations(e.target.name, e.target.value);
+
+
+ 
 
   handleInputData = (e) => {
 
@@ -67,6 +113,7 @@ class Form extends React.Component {
             autoComplete="off"
             maxLength={this.state.maxLength}
             name={item.name}
+            onBlur={this.handleBlur}
             />
           }) : null}         
           <div>
