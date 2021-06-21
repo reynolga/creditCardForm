@@ -2,7 +2,7 @@ import React from 'react';
 import InputBase from '../InputBase/InputBase.jsx';
 import './Form.css';
 import {OTHERCARDS} from '../constants';
-import {cardNumberValidation} from '../validations'
+import {cardNumberValidation, onlyTextValidation, securityCodeValidation, cardExpireValidation} from '../validations'
 
 const INIT_CARD = {  
     card: '',
@@ -10,6 +10,7 @@ const INIT_CARD = {
     expiry: '',
     securityCode: '',  
 }
+const MIN_SECURITY_LENGTH = 3;
 class Form extends React.Component {
   constructor() {
     super();
@@ -40,7 +41,6 @@ class Form extends React.Component {
      switch (type) {
        case 'card':
         errorText = cardNumberValidation(value);
-
          this.setState((prevState)=> ({          
             cardType: this.findDebitCardType(value),
             error: {
@@ -48,20 +48,33 @@ class Form extends React.Component {
               cardError: errorText,
             }           
          }))
-         // find card type.
-         // setState cardType, error
          break;
        case 'cardHolder':
-         // checks for spaces and numbers
-         //setState for an error
+        errorText = onlyTextValidation(value);  
+         this.setState((prevState)=> ({
+          error: {
+            ...prevState.error,
+            cardHolderError: errorText,
+          } 
+         }))
          break;
        case 'expiry':
-         //check date formate
-         //set state for
+        errorText = cardExpireValidation(value);  
+        this.setState((prevState)=> ({
+         error: {
+           ...prevState.error,
+           expiryError: errorText,
+         } 
+        }))
          break;
       case 'securityCode':
-         //check min lenght
-         // set error
+        errorText = securityCodeValidation(MIN_SECURITY_LENGTH, value);  
+        this.setState((prevState)=> ({
+         error: {
+           ...prevState.error,
+           securityCOdeError: errorText,
+         } 
+        }))
          break;
       default:
         break;
