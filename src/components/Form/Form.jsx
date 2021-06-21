@@ -84,9 +84,6 @@ class Form extends React.Component {
 
   handleBlur = (e) => this.handleValidations(e.target.name, e.target.value);
 
-
- 
-
   handleInputData = (e) => {
 
     if(e.target.name === 'card'){
@@ -114,6 +111,34 @@ class Form extends React.Component {
     }
   }
 
+ checkErrorBeforeSave = () => {
+   let errorValue = {};
+   let isError = false; 
+
+   Object.keys(this.state.cardData).forEach((value) => {
+     if(!this.state.cardData[value].length){       
+        errorValue = { ...errorValue, [`${value}Error`]: 'Required'};
+        isError = true;
+     }
+   })
+
+   this.setState({ error:errorValue });
+   return isError;
+ }
+
+  handleAddCard = (e) => {
+    e.preventDefault();
+
+    const errorCheck = this.checkErrorBeforeSave();
+
+    if(!errorCheck){
+      this.setState({
+        cardData: INIT_CARD,
+        cardType: null
+      })
+    }
+  }
+
   render() {
 
     const inputData = [
@@ -127,7 +152,7 @@ class Form extends React.Component {
     return (
       <div>
         <h1>Add New Card</h1>
-        <form action="">
+        <form onSubmit={this.handleAddCard}>
           {inputData.length ? inputData.map((item) => {
             return <InputBase 
             placeholder={item.label}
@@ -145,7 +170,7 @@ class Form extends React.Component {
               (this.state.error                                 // Object exists
               && this.state.error[item.error]                   // Property exists
               && this.state.error[item.error].length > 1)       // Message is present
-              ? this.state.error[item.error]
+              ? this.state.error[item.error]                    // Error message
               : null
             }
             />
