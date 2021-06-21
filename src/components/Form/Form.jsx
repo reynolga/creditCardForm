@@ -2,6 +2,7 @@ import React from 'react';
 import InputBase from '../InputBase/InputBase.jsx';
 import './Form.css';
 import {OTHERCARDS} from '../constants';
+import {cardNumberValidation} from '../validations'
 
 const INIT_CARD = {  
     card: '',
@@ -22,7 +23,7 @@ class Form extends React.Component {
    
   findDebitCardType = (cardNumber) => {
     const regexPattern = {
-      MASTERCAD: /^5[1-5][0-9]{1,}|^2[2-7][0-9]{1,}$/,
+      MASTERCARD: /^5[1-5][0-9]{1,}|^2[2-7][0-9]{1,}$/,
       VISA: /^4[0-9]{5,}$/,
       AMERICAN_EXPRESS: /^3[47][0-9]{5,}$/,
       DISCOVER: /^6(?:011|5[0-9]{2})[0-9]{3,}$/,
@@ -34,9 +35,19 @@ class Form extends React.Component {
   }
 
   handleValidations = (type, value) => {
+    let errorText = '';
+
      switch (type) {
        case 'card':
-         this.setState({cardType: this.findDebitCardType(value)})
+        errorText = cardNumberValidation(value);
+
+         this.setState((prevState)=> ({          
+            cardType: this.findDebitCardType(value),
+            error: {
+              ...prevState.error,
+              cardError: errorText,
+            }           
+         }))
          // find card type.
          // setState cardType, error
          break;
