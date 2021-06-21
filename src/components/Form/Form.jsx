@@ -112,14 +112,14 @@ class Form extends React.Component {
   }
 
  checkErrorBeforeSave = () => {
-   let errorValue = {};
+   let errorValue = this.state.error;
    let isError = false; 
 
    Object.keys(this.state.cardData).forEach((value) => {
      if(!this.state.cardData[value].length){       
         errorValue = { ...errorValue, [`${value}Error`]: 'Required'};
         isError = true;
-     }
+     } 
    })
 
    this.setState({ error:errorValue });
