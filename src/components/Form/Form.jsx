@@ -115,6 +115,13 @@ class Form extends React.Component {
    let errorValue = this.state.error;
    let isError = false; 
 
+    //Check for existing errors
+    Object.keys(this.state.error).forEach((value) => {
+      if(this.state.error[value]?.length > 0){
+       isError = true;
+      }
+    })
+
    Object.keys(this.state.cardData).forEach((value) => {
      if(!this.state.cardData[value].length){       
         errorValue = { ...errorValue, [`${value}Error`]: 'Required'};
