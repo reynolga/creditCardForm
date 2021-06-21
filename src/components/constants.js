@@ -50,7 +50,7 @@ export const AMERICAN_EXPRESS = [
   /\d/,
 ]
 
-export const card = [
+export const CARD = [
   'VISA',
   'MASTERCARD',
   'AMERICAN_EXPRESS',

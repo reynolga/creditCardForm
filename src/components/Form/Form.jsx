@@ -72,7 +72,7 @@ class Form extends React.Component {
         this.setState((prevState)=> ({
          error: {
            ...prevState.error,
-           securityCOdeError: errorText,
+           securityCodeError: errorText,
          } 
         }))
          break;
@@ -117,10 +117,10 @@ class Form extends React.Component {
   render() {
 
     const inputData = [
-      {label: 'Card Number',         name:'card',   type:'text' },
-      {label: 'CardHolder\'s Name',  name:'cardHolder',   type:'text' },
-      {label: 'Expiry Date (MM/YY)', name:'expiry',       type:'text' },
-      {label: 'Security Code',       name:'securityCode', type:'text' },
+      { label: 'Card Number',         name:'card',         type:'text', error: 'cardError' },
+      { label: 'CardHolder\'s Name',  name:'cardHolder',   type:'text', error: 'cardHolderError' },
+      { label: 'Expiry Date (MM/YY)', name:'expiry',       type:'text', error: 'expiryError' },
+      { label: 'Security Code',       name:'securityCode', type:'text', error: 'securityCodeError' },
     ]
     console.log(inputData.length);
 
@@ -138,6 +138,16 @@ class Form extends React.Component {
             maxLength={this.state.maxLength}
             name={item.name}
             onBlur={this.handleBlur}
+            error={this.state.error}
+            cardType={this.state.cardType}
+            isCard={ item.name === 'card'}
+            errorMessage={
+              (this.state.error                                 // Object exists
+              && this.state.error[item.error]                   // Property exists
+              && this.state.error[item.error].length > 1)       // Message is present
+              ? this.state.error[item.error]
+              : null
+            }
             />
           }) : null}         
           <div>
