@@ -82,31 +82,31 @@ class Form extends React.Component {
      }
   }
 
-  handleBlur = (e) => this.handleValidations(e.target.name, e.target.value);
+  handleBlur = ({target: {name, value}}) => this.handleValidations(name, value);
 
-  handleInputData = (e) => {
+  handleInputData = ({target: {name, value}}) => {
 
-    if(e.target.name === 'card'){
-      let mask = e.target.value.split(' ').join('');
+    if(name === 'card'){
+      let mask = value.split(' ').join('');
       if(mask.length){
         mask = mask.match(new RegExp('.{1,4}', 'g')).join(' ');
         this.setState((prevState) => ({       
           cardData: { 
            ...prevState.cardData, 
-            [e.target.name]: mask}
+            [name]: mask}
            }));
       } else {
         this.setState((prevState) => ({       
           cardData: { 
             ...prevState.cardData, 
-            [e.target.name]: ''}
+            [name]: ''}
             }));
       }
     } else {
       this.setState((prevState) => ({       
         cardData: { 
           ...prevState.cardData, 
-          [e.target.name]: e.target.value}
+          [name]: value}
           }));
     }
   }
@@ -114,16 +114,17 @@ class Form extends React.Component {
  checkErrorBeforeSave = () => {
    let errorValue = this.state.error;
    let isError = false; 
+   const { cardData, error} = this.state; 
 
     //Check for existing errors
-    Object.keys(this.state.error).forEach((value) => {
-      if(this.state.error[value]?.length > 0){
+    Object.keys(error).forEach((value) => {
+      if(error[value]?.length > 0){
        isError = true;
       }
     })
 
-   Object.keys(this.state.cardData).forEach((value) => {
-     if(!this.state.cardData[value].length){       
+   Object.keys(cardData).forEach((value) => {
+     if(!cardData[value].length){       
         errorValue = { ...errorValue, [`${value}Error`]: 'Required'};
         isError = true;
      } 
@@ -135,9 +136,7 @@ class Form extends React.Component {
 
   handleAddCard = (e) => {
     e.preventDefault();
-
     const errorCheck = this.checkErrorBeforeSave();
-
     if(!errorCheck){
       this.setState({
         cardData: INIT_CARD,
@@ -147,6 +146,7 @@ class Form extends React.Component {
   }
 
   render() {
+  const {cardData, cardType, error, maxLength} = this.state;
 
     const inputData = [
       { label: 'Card Number',         name:'card',         type:'text', error: 'cardError' },
@@ -164,20 +164,20 @@ class Form extends React.Component {
             return <InputBase 
             placeholder={item.label}
             type={item.type}
-            value={this.state.cardData && this.state.cardData[item.name]} //Check for data before rendering
+            value={cardData && cardData[item.name]} //Check for data before rendering
             onChange={this.handleInputData}
             autoComplete="off"
-            maxLength={this.state.maxLength}
+            maxLength={maxLength}
             name={item.name}
             onBlur={this.handleBlur}
-            error={this.state.error}
-            cardType={this.state.cardType}
+            error={error}
+            cardType={cardType}
             isCard={ item.name === 'card'}
             errorMessage={
-              (this.state.error                                 // Object exists
-              && this.state.error[item.error]                   // Property exists
-              && this.state.error[item.error].length > 1)       // Message is present
-              ? this.state.error[item.error]                    // Error message
+              (error                                 // Object exists
+              && error[item.error]                   // Property exists
+              && error[item.error].length > 1)       // Message is present
+              ? error[item.error]                    // Error message
               : null
             }
             />
